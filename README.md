@@ -1,5 +1,5 @@
 # Winlocker-by-python
-ПАРОЛЬ: 8263
+ПАРОЛЬ: указан в коде
 This program is designed for testing system security.
 If you use it for other purposes, you assume full responsibility.
 Эта программа предназначена для проверки безопасности системы.
